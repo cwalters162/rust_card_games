@@ -70,9 +70,17 @@ then swaps cards until the 13th pile is complete or all piles have matching card
 fn clock() -> bool {
     let time_to_view_cards = Duration::from_secs(2);
     let mut game_complete = false;
-    let cards = make_cards(true);
+    let mut cards = make_cards(true);
+    let mut split_cards: Vec<VecDeque<Card>> = Vec::new();
 
-    let mut split_cards: Vec<VecDeque<Card>> = cards.chunks(4).map(|card| card.iter().cloned().collect()).collect();
+    for _ in 0..13 {
+        split_cards.push(VecDeque::new());
+        for _ in 0..4 {
+            split_cards.last_mut().unwrap().push_front(cards.pop().unwrap());
+        }
+    }
+
+    // let mut split_cards: Vec<VecDeque<Card>> = cards.chunks(4).map(|card| card.iter().cloned().collect()).collect();
 
     //get the first card from the 13th pile
     let mut current_card = split_cards.last_mut().map(|chunk| chunk.pop_back().unwrap()).unwrap();
@@ -88,6 +96,7 @@ fn clock() -> bool {
                 println!("Inside of the if statement");
                 chunk.push_front(current_card.clone());
                 current_card = chunk.pop_back().unwrap();
+                break;
             }
             //repeat until 13th pile is done.
             // break out if the 13th pile has 4 of the same value.
@@ -100,7 +109,6 @@ fn clock() -> bool {
                 }
             }
             //get the next card from that chunk.
-
         }
 
 
