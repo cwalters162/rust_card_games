@@ -2,8 +2,8 @@ use std::collections::VecDeque;
 use rand;
 use rand::seq::SliceRandom;
 use std::fmt;
-use std::time::{Duration};
-use std::thread;
+use std::ops::IndexMut;
+use std::time::{Duration, Instant};
 
 #[derive(Clone, Debug)]
 struct Card {
@@ -60,6 +60,12 @@ fn test() {
     }
 }
 
+#[derive(PartialEq)]
+enum GameResult {
+    WON,
+    LOSS,
+}
+
 // Start of the functions for clock
 /*
 Game creates a deck of shuffled cards
@@ -67,7 +73,8 @@ Splits the cards into 13 piles.
 Take the 1st card from the 13th pile.
 then swaps cards until the 13th pile is complete or all piles have matching cards.
 */
-fn clock() -> bool {
+fn clock() -> GameResult {
+    let mut won_or_loss = GameResult::WON;
     let time_to_view_cards = Duration::from_secs(2);
     let mut game_complete = false;
     let mut cards = make_cards(true);
@@ -85,44 +92,66 @@ fn clock() -> bool {
     //get the first card from the 13th pile
     let mut current_card = split_cards.last_mut().map(|chunk| chunk.pop_back().unwrap()).unwrap();
 
+    let mut round = 0;
     while game_complete != true {
-        println!("Current card: {}", current_card);
+        /*
+        check the value of the current card
+        find where it's place is
+        insert that card to the front
+        take the next card from the back
+        repeat until all four kings/13s are in their pile.
 
-        for (i, chunk) in split_cards.iter_mut().enumerate() {
-            //insert it into it's correct chunk.
-            println!("I: {}.... current card value: {}", &i, &current_card.value);
-
-            if i == current_card.value {
-                println!("Inside of the if statement");
-                chunk.push_front(current_card.clone());
-                current_card = chunk.pop_back().unwrap();
-                break;
+        check if all the cards are in the rights spot game is won
+        else the game is lost.
+         */
+        let mut total_kings_in_pile_13 = 0;
+        for card in split_cards.last().unwrap() {
+            if card.value == 13 && current_card.value == 13 {
+                total_kings_in_pile_13 += 1;
             }
-            //repeat until 13th pile is done.
-            // break out if the 13th pile has 4 of the same value.
-            if i == 12 {
-                let mut total_cards = 0;
-                let _ = chunk.iter().map(|card| if card.value == 12 { total_cards += 1; });
-                if total_cards == 4 {
-                    game_complete = true;
+        }
+
+        round += 1;
+        //println!("Round {}. Current Card: {}", &round, &current_card);
+
+        let current_card_value = current_card.value;
+        split_cards.index_mut(current_card_value - 1).push_front(current_card);
+        current_card = split_cards.index_mut(current_card_value - 1).pop_back().unwrap();
+
+
+        if total_kings_in_pile_13 == 3 && current_card_value == 13 {
+            split_cards.index_mut(current_card_value - 1).push_front(current_card.clone());
+            game_complete = true;
+
+            for (i, pile) in split_cards.iter().enumerate() {
+                for card in pile.iter() {
+                    if card.value != i {
+                        won_or_loss = GameResult::LOSS;
+                    }
+                }
+                if won_or_loss == GameResult::WON {
                     break;
                 }
             }
-            //get the next card from that chunk.
         }
-
-
-        // check if all chunks have the same value.
-        //if true game is won' else lost.
-        thread::sleep(time_to_view_cards);
-        // game_complete = true;
     }
-    true
+    won_or_loss
 }
-
 
 
 fn main() {
     // test();
-    clock();
+    let start = Instant::now();
+    let mut games_won = 0;
+    let mut games_loss = 0;
+
+    for _ in 0..100000 {
+        match clock() {
+            GameResult::WON => games_won += 1,
+            GameResult::LOSS => games_loss += 1,
+        }
+    }
+    let game_won_percentage = games_won / games_loss;
+    println!("Clock games won: {}, loss: {}, ratio: {}%", games_won, games_loss, game_won_percentage);
+    println!("Time taken to complete {} of games: {:?}", games_won + games_loss, Instant::now().duration_since(start));
 }
