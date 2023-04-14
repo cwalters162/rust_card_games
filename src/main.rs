@@ -93,6 +93,7 @@ fn clock() -> GameResult {
     let mut current_card = split_cards.last_mut().map(|chunk| chunk.pop_back().unwrap()).unwrap();
 
     let mut round = 0;
+    let mut times_seen_king= 0;
     while game_complete != true {
         /*
         check the value of the current card
@@ -104,33 +105,25 @@ fn clock() -> GameResult {
         check if all the cards are in the rights spot game is won
         else the game is lost.
          */
-        let mut total_kings_in_pile_13 = 0;
-        for card in split_cards.last().unwrap() {
-            if card.value == 13 && current_card.value == 13 {
-                total_kings_in_pile_13 += 1;
-            }
-        }
-
         round += 1;
         //println!("Round {}. Current Card: {}", &round, &current_card);
 
         let current_card_value = current_card.value;
         split_cards.index_mut(current_card_value - 1).push_front(current_card);
         current_card = split_cards.index_mut(current_card_value - 1).pop_back().unwrap();
+        if current_card.value == 13 {
+            times_seen_king += 1
+        }
 
-
-        if total_kings_in_pile_13 == 3 && current_card_value == 13 {
+        if times_seen_king == 4 {
             split_cards.index_mut(current_card_value - 1).push_front(current_card.clone());
             game_complete = true;
 
             for (i, pile) in split_cards.iter().enumerate() {
                 for card in pile.iter() {
-                    if card.value != i {
+                    if card.value - 1 != i {
                         won_or_loss = GameResult::LOSS;
                     }
-                }
-                if won_or_loss == GameResult::WON {
-                    break;
                 }
             }
         }
@@ -142,16 +135,16 @@ fn clock() -> GameResult {
 fn main() {
     // test();
     let start = Instant::now();
-    let mut games_won = 0;
-    let mut games_loss = 0;
+    let mut games_won: f64 = 0.0;
+    let mut games_loss: f64 = 0.0;
 
-    for _ in 0..100000 {
+    for _ in 0..10000000 {
         match clock() {
-            GameResult::WON => games_won += 1,
-            GameResult::LOSS => games_loss += 1,
+            GameResult::WON => games_won += 1.0,
+            GameResult::LOSS => games_loss += 1.0,
         }
     }
-    let game_won_percentage = games_won / games_loss;
+    let game_won_percentage: f64 = (games_won / games_loss * 100.0);
     println!("Clock games won: {}, loss: {}, ratio: {}%", games_won, games_loss, game_won_percentage);
     println!("Time taken to complete {} of games: {:?}", games_won + games_loss, Instant::now().duration_since(start));
 }
