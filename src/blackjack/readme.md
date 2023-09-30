@@ -41,12 +41,18 @@ and provide enough information to play a full hand of Blackjack.
 
 ## API
 
+new_game();
+
 get_player_hand();
 
 get_dealer_hand();
 
-player_stand();
-
 player_hit();
 
-new_game();
+dealer_hit();
+
+get_player_value();
+
+get_dealer_value();
+
+
