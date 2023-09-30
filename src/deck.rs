@@ -2,7 +2,7 @@ use crate::card::Card;
 use rand::prelude::*;
 
 fn shuffle(vec: &mut Vec<Card>) {
-    let mut rng = rand::thread_rng();
+    let mut rng = thread_rng();
     vec.shuffle(&mut rng);
 }
 
