@@ -5,7 +5,6 @@ mod hand;
 
 use crate::clock::clock;
 
-use std::ops::IndexMut;
 use std::time::Instant;
 use std::io::stdin;
 
