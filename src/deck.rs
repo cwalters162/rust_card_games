@@ -1,28 +1,5 @@
-use std::fmt;
+use crate::card::Card;
 use rand::prelude::*;
-
-#[derive(Clone, Debug)]
-pub struct Card {
-    name: String,
-    suit: String,
-    value: usize
-}
-
-impl Card {
-    fn what_card(&self) {
-        println!("I have the {} of {} and it's value is {}", self.name, self.suit, self.value)
-    }
-
-    pub fn get_value(&self) -> usize {
-        self.value
-    }
-}
-
-impl fmt::Display for Card {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "The {} of {}", self.name, self.suit)
-    }
-}
 
 fn shuffle(vec: &mut Vec<Card>) {
     let mut rng = rand::thread_rng();
@@ -38,11 +15,12 @@ pub fn make_deck(isShuffled: bool) -> Vec<Card> {
 
     for suit in suits {
         for (x, _value) in values.iter().enumerate() {
-            cards.push(Card {
-                name: names[x].to_string(),
-                suit: suit.to_string(),
-                value: values[x]
-            })
+            cards.push(Card::new(
+                names[x].to_string(),
+                suit.to_string(),
+                values[x],
+                false
+            ))
         }
     }
     if isShuffled == true {

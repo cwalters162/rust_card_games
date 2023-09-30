@@ -1,5 +1,5 @@
 use crate::deck::make_deck;
-use crate::deck::Card;
+use crate::card::Card;
 use crate::GameResult;
 
 use std::collections::VecDeque;
