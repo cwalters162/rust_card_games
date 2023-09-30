@@ -50,12 +50,3 @@ pub fn make_deck(isShuffled: bool) -> Vec<Card> {
     }
     cards
 }
-
-fn test() {
-    let cards = make_deck(true);
-
-    for card in cards {
-        card.what_card();
-        println!("Current Card {}", card);
-    }
-}
