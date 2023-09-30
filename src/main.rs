@@ -2,11 +2,13 @@ mod clock;
 mod deck;
 mod card;
 mod hand;
+mod blackjack;
 
 use crate::clock::clock;
 
 use std::time::Instant;
 use std::io::stdin;
+use crate::blackjack::start_blackjack;
 
 #[derive(PartialEq)]
 pub enum GameResult {
@@ -32,7 +34,12 @@ fn console_interface() {
 
         match res.unwrap() {
             1 => { start_clock() }
-            //1 => { start_blackjack()}
+            2 => {
+                match start_blackjack() {
+                    GameResult::WON => println!("You Won Blackjack!"),
+                    GameResult::LOSS => println!("You Lost Blackjack!"),
+                }
+            }
             0 => {
                 println!("Goodbye!");
                 break 'ui_loop;
