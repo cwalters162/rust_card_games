@@ -1,6 +1,7 @@
 mod clock;
 mod deck;
 mod card;
+mod hand;
 
 use crate::clock::clock;
 
