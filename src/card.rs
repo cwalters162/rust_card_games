@@ -9,7 +9,7 @@ pub struct Card {
 }
 
 impl Card {
-    pub fn new(name: String, suit: String, value: usize, is_ace: bool) -> Card {
+    pub fn new(name: String, suit: String, value: usize, is_ace: bool) -> Self {
         Card {
             name,
             suit,

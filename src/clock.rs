@@ -17,7 +17,6 @@ then swaps cards until the 13th pile is complete or all piles have matching card
 */
 pub fn clock() -> GameResult {
     let mut won_or_loss = GameResult::WON;
-    let time_to_view_cards = Duration::from_secs(2);
     let mut game_complete = false;
     let mut cards = make_deck(true);
     let mut split_cards: Vec<VecDeque<Card>> = Vec::new();
@@ -34,7 +33,6 @@ pub fn clock() -> GameResult {
     //get the first card from the 13th pile
     let mut current_card = split_cards.last_mut().map(|chunk| chunk.pop_back().unwrap()).unwrap();
 
-    let mut round = 0;
     let mut times_seen_king= 0;
     while game_complete != true {
         /*
@@ -47,8 +45,6 @@ pub fn clock() -> GameResult {
         check if all the cards are in the rights spot game is won
         else the game is lost.
          */
-        round += 1;
-        //println!("Round {}. Current Card: {}", &round, &current_card);
 
         let current_card_value = current_card.get_value();
         split_cards.index_mut(current_card_value - 1).push_front(current_card);

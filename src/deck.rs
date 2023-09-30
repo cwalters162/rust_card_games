@@ -6,7 +6,7 @@ fn shuffle(vec: &mut Vec<Card>) {
     vec.shuffle(&mut rng);
 }
 
-pub fn make_deck(isShuffled: bool) -> Vec<Card> {
+pub fn make_deck(is_shuffled: bool) -> Vec<Card> {
     let suits = Vec::from(["Diamonds", "Hearts", "Clubs", "Spades"]);
     let names = Vec::from(["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"]);
     let values = Vec::from([1,2,3,4,5,6,7,8,9,10,11,12,13]);
@@ -23,7 +23,7 @@ pub fn make_deck(isShuffled: bool) -> Vec<Card> {
             ))
         }
     }
-    if isShuffled == true {
+    if is_shuffled == true {
         shuffle(&mut cards);
     }
     cards
