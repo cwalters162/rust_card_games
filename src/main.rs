@@ -8,7 +8,7 @@ use crate::clock::clock;
 
 use std::time::Instant;
 use std::io::stdin;
-use crate::blackjack::start_blackjack;
+use crate::blackjack::blackjack;
 
 #[derive(PartialEq)]
 pub enum GameResult {
@@ -34,12 +34,7 @@ fn console_interface() {
 
         match res.unwrap() {
             1 => { start_clock() }
-            2 => {
-                match start_blackjack() {
-                    GameResult::WON => println!("You Won Blackjack!"),
-                    GameResult::LOSS => println!("You Lost Blackjack!"),
-                }
-            }
+            2 => { start_blackjack() }
             0 => {
                 println!("Goodbye!");
                 break 'ui_loop;
@@ -61,6 +56,22 @@ fn start_clock() {
         }
     }
 
+    let game_won_percentage: f64 = games_won / games_loss * 100.0;
+    println!("Blackjack games won: {}, loss: {}, ratio: {}%", games_won, games_loss, game_won_percentage);
+    println!("Time taken to complete {} of games: {:?}", games_won + games_loss, Instant::now().duration_since(start));
+}
+
+fn start_blackjack() {
+    let start = Instant::now();
+    let mut games_won = 0.0;
+    let mut games_loss = 0.0;
+
+    for _ in 0..10000 {
+        match blackjack() {
+            GameResult::WON => games_won += 1.0,
+            GameResult::LOSS => games_loss += 1.0,
+        }
+    }
     let game_won_percentage: f64 = games_won / games_loss * 100.0;
     println!("Clock games won: {}, loss: {}, ratio: {}%", games_won, games_loss, game_won_percentage);
     println!("Time taken to complete {} of games: {:?}", games_won + games_loss, Instant::now().duration_since(start));

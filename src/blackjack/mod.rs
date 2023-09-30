@@ -59,7 +59,7 @@ impl Blackjack {
     }
 }
 
-pub fn start_blackjack() -> GameResult {
+pub fn blackjack() -> GameResult {
     //create a new game of blackjack
     let mut game = Blackjack::new_game();
     //get player bet
@@ -74,22 +74,28 @@ pub fn start_blackjack() -> GameResult {
     game.player_hit();
     game.player_hit();
     //display player hand + value
+
+    //ask player to hit or stand
     while game.get_player_value() < 17 {
         game.player_hit();
     }
 
+    //check if the player busted
     if game.get_player_value() > 21 {
         return GameResult::LOSS;
     }
 
+    // dealer has to hit until 17
     while game.get_dealer_value() < 17 {
         game.dealer_hit();
     }
 
+    //check if the dealer busted
     if game.get_dealer_value() > 21 {
         return GameResult::WON;
     }
 
+    // if the player and dealer has not busted who's had is highest?
     if game.get_dealer_value() >= game.get_player_value() {
         GameResult::LOSS
     } else {
