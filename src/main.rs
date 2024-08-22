@@ -57,7 +57,7 @@ fn start_clock() {
     }
 
     let game_won_percentage: f64 = games_won / games_loss * 100.0;
-    println!("Blackjack games won: {}, loss: {}, ratio: {}%", games_won, games_loss, game_won_percentage);
+    println!("Clock games won: {}, loss: {}, ratio: {}%", games_won, games_loss, game_won_percentage);
     println!("Time taken to complete {} of games: {:?}", games_won + games_loss, Instant::now().duration_since(start));
 }
 
@@ -73,6 +73,6 @@ fn start_blackjack() {
         }
     }
     let game_won_percentage: f64 = games_won / games_loss * 100.0;
-    println!("Clock games won: {}, loss: {}, ratio: {}%", games_won, games_loss, game_won_percentage);
+    println!("Blackjack games won: {}, loss: {}, ratio: {}%", games_won, games_loss, game_won_percentage);
     println!("Time taken to complete {} of games: {:?}", games_won + games_loss, Instant::now().duration_since(start));
 }
